@@ -1,0 +1,23 @@
+{
+  "gene": "CYP2C9",
+  "starAlleles": {
+    "*1": {
+      "function": "normal",
+      "variants": []
+    },
+    "*3": {
+      "function": "decreased",
+      "variants": ["rs1057910"]
+    }
+  },
+  "activityScore": {
+    "normal": 1.0,
+    "decreased": 0.5,
+    "no_function": 0.0
+  },
+  "phenotypeRules": [
+    { "minScore": 0, "maxScore": 0, "phenotype": "PM" },
+    { "minScore": 0.5, "maxScore": 1, "phenotype": "IM" },
+    { "minScore": 1.5, "maxScore": 2, "phenotype": "NM" }
+  ]
+}

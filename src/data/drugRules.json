@@ -1,0 +1,62 @@
+{
+  "CODEINE": {
+    "gene": "CYP2D6",
+    "rules": {
+      "PM": {
+        "risk": "Ineffective",
+        "severity": "high",
+        "recommendation": "Avoid codeine. Consider morphine."
+      },
+      "IM": {
+        "risk": "Adjust Dosage",
+        "severity": "moderate",
+        "recommendation": "Use lower starting dose."
+      },
+      "NM": {
+        "risk": "Safe",
+        "severity": "none",
+        "recommendation": "Standard dosing."
+      }
+    }
+  },
+  "WARFARIN": {
+    "gene": "CYP2C9",
+    "rules": {
+      "PM": {
+        "risk": "Toxic",
+        "severity": "high",
+        "recommendation": "Use significantly reduced dose."
+      },
+      "IM": {
+        "risk": "Adjust Dosage",
+        "severity": "moderate",
+        "recommendation": "Start with lower dose."
+      },
+      "NM": {
+        "risk": "Safe",
+        "severity": "none",
+        "recommendation": "Standard dosing."
+      }
+    }
+  },
+  "AZATHIOPRINE": {
+    "gene": "TPMT",
+    "rules": {
+      "PM": {
+        "risk": "Toxic",
+        "severity": "critical",
+        "recommendation": "Avoid or drastically reduce dose."
+      },
+      "IM": {
+        "risk": "Adjust Dosage",
+        "severity": "high",
+        "recommendation": "Reduce starting dose."
+      },
+      "NM": {
+        "risk": "Safe",
+        "severity": "none",
+        "recommendation": "Standard dosing."
+      }
+    }
+  }
+}

@@ -1,73 +1,99 @@
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
 import { parseVCF } from "../services/vcfParser.js";
-import { determinePhenotype } from "../services/phenotypeMapper.js";
-import { DRUG_GENE_MAP, assessRisk } from "../services/riskEngine.js";
+import { determineDiplotype } from "../services/starAlleleEngine.js";
+import { determinePhenotype } from "../services/phenotypeEngine.js";
+import { evaluateDrug } from "../services/drugRuleEngine.js";
 import { generateExplanation } from "../services/geminiService.js";
 import { buildResponse } from "../utils/jsonBuilder.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export async function analyzeVCF(req, res) {
   try {
     if (!req.file) {
-      return res.status(400).json({ error: "VCF file required" });
+      return res.status(400).json({ error: "No VCF file uploaded" });
     }
-    console.log("📁 Received file:", req.file.originalname);
-    const drugs = req.body.drugs?.toUpperCase().split(",") || [];
 
+    if (!req.body.drugs) {
+      return res.status(400).json({ error: "No drug input provided" });
+    }
+
+    const drugs = req.body.drugs.toUpperCase().split(",");
     const variants = parseVCF(req.file.path);
 
     const results = [];
 
+    // Load drug rules once (faster + cleaner)
+    const drugRulesPath = path.join(__dirname, "../data/drugRules.json");
+    const drugRules = JSON.parse(fs.readFileSync(drugRulesPath, "utf-8"));
+
     for (let drug of drugs) {
-      const gene = DRUG_GENE_MAP[drug];
-      if (!gene) {
-        console.warn(`⚠️ No gene mapping found for drug: ${drug}`);
+      drug = drug.trim();
+
+      const drugData = drugRules[drug];
+      if (!drugData) {
+        console.warn(`Drug rule not found for ${drug}`);
         continue;
       }
 
-      const geneVariants = variants.filter(v => v.gene === gene);
+      const geneName = drugData.gene;
 
-      const diplotype = "*4/*4"; // Simplified for hackathon
-      const phenotype = determinePhenotype(diplotype);
-      const risk = assessRisk(drug, phenotype);
+      // Load gene database safely
+      const genePath = path.join(__dirname, `../data/genes/${geneName}.json`);
 
-      console.log(`🔬 Analyzing ${drug}...`);
+      if (!fs.existsSync(genePath)) {
+        console.warn(`Gene database not found for ${geneName}`);
+        continue;
+      }
+
+      const geneData = JSON.parse(fs.readFileSync(genePath, "utf-8"));
+
+      const geneVariants = variants.filter((v) => v.gene === geneName);
+
+      const diplotype = determineDiplotype(geneData, geneVariants);
+      const phenotype = determinePhenotype(geneData, diplotype);
+
+      const rule = evaluateDrug(drug, phenotype);
+
+      if (!rule) {
+        console.warn(`No rule match for ${drug} + ${phenotype}`);
+        continue;
+      }
+
       const explanation = await generateExplanation({
-        gene,
+        gene: geneName,
         diplotype,
         phenotype,
         drug,
-        risk
+        risk: rule.risk,
       });
 
-      const response = buildResponse({
-        patientId: "PATIENT_001",
-        drug,
-        risk,
-        phenotype,
-        gene,
-        variants: geneVariants,
-        explanation
-      });
-
-      results.push(response);
+      results.push(
+        buildResponse({
+          patientId: "PATIENT_001",
+          drug,
+          risk: rule.risk,
+          phenotype,
+          gene: geneName,
+          variants: geneVariants,
+          explanation,
+          diplotype,
+        }),
+      );
     }
 
-    fs.unlinkSync(req.file.path);
-
-    console.log(`✅ Analysis complete for ${results.length} drug(s)`);
-    res.json(results);
-
-  } catch (error) {
-    console.error("❌ Analysis Error:", error.message);
-    console.error("Full error:", error);
-    
-    // Provide more specific error messages
-    if (error.message.includes("fetch")) {
-      return res.status(503).json({ 
-        error: "API service unavailable. Check network connectivity and API key." 
-      });
+    // Clean uploaded file
+    if (fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
     }
-    
-    res.status(500).json({ error: "Internal Server Error", details: error.message });
+
+    return res.json(results);
+  } catch (err) {
+    console.error("ANALYSIS ERROR:", err);
+    return res.status(500).json({ error: "Analysis failed" });
   }
 }
