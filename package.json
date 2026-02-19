@@ -1,0 +1,35 @@
+{
+  "name": "health-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/server.js",
+    "dev": "nodemon ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abudardarajiya-eng/Health-Backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type":"module",
+  "bugs": {
+    "url": "https://github.com/abudardarajiya-eng/Health-Backend/issues"
+  },
+  "homepage": "https://github.com/abudardarajiya-eng/Health-Backend#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "@google/generative-ai": "^0.5.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongoose": "^9.2.1",
+    "multer": "^2.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
