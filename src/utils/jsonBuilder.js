@@ -22,19 +22,36 @@ export function buildResponse({
   const severity = severityMap[risk] || "low";
 
   // ---------------------------
-  // Confidence Score Logic
+  // Advanced Confidence Calculation
   // ---------------------------
-  let confidenceScore = 0.5;
+  function calculateConfidence() {
+    let score = 0;
 
-  if (variants.length === 0) {
-    confidenceScore = 0.4;
-  } else if (phenotype === "Unknown") {
-    confidenceScore = 0.6;
-  } else if (risk === "Safe") {
-    confidenceScore = 0.95;
-  } else {
-    confidenceScore = 0.9;
+    // 1. VCF successfully parsed (assumed true if here)
+    score += 0.2;
+
+    // 2. Variants detected
+    if (variants.length > 0) score += 0.2;
+
+    // 3. Diplotype confidently assigned
+    if (diplotype && !diplotype.includes("Unknown")) {
+      score += 0.2;
+    }
+
+    // 4. Phenotype known
+    if (phenotype && phenotype !== "Unknown") {
+      score += 0.2;
+    }
+
+    // 5. Drug rule match found
+    if (risk && risk !== "Unknown") {
+      score += 0.2;
+    }
+
+    return Number(score.toFixed(2));
   }
+
+  const confidenceScore = calculateConfidence();
 
   // ---------------------------
   // CPIC Reference Mapping
@@ -48,7 +65,8 @@ export function buildResponse({
     "FLUOROURACIL": "CPIC Guideline for DPYD"
   };
 
-  const cpicReference = cpicReferences[drug] || "CPIC Pharmacogenomic Guideline";
+  const cpicReference =
+    cpicReferences[drug] || "CPIC Pharmacogenomic Guideline";
 
   // ---------------------------
   // Dose Recommendation Logic
@@ -58,11 +76,14 @@ export function buildResponse({
   if (risk === "Safe") {
     doseRecommendation = "Standard dosing recommended";
   } else if (risk === "Adjust Dosage") {
-    doseRecommendation = "Dose reduction or alternative dosing recommended";
+    doseRecommendation =
+      "Dose reduction or alternative dosing recommended";
   } else if (risk === "Toxic") {
-    doseRecommendation = "Avoid drug or select alternative therapy";
+    doseRecommendation =
+      "Avoid drug or select alternative therapy";
   } else if (risk === "Ineffective") {
-    doseRecommendation = "Consider alternative therapy";
+    doseRecommendation =
+      "Consider alternative therapy";
   }
 
   return {
@@ -94,16 +115,20 @@ export function buildResponse({
     },
 
     llm_generated_explanation: {
-      summary: explanation.summary || explanation,
-      biological_mechanism: explanation.mechanism || explanation,
-      clinical_impact: explanation.impact || explanation
+      summary: explanation?.summary || explanation,
+      biological_mechanism: explanation?.mechanism || explanation,
+      clinical_impact: explanation?.impact || explanation
     },
 
     quality_metrics: {
       vcf_parsing_success: true,
       variants_detected: variants.length,
       gene_match_found: variants.length > 0,
-      rule_match_found: risk !== "Unknown"
+      rule_match_found: risk !== "Unknown",
+      diplotype_confident:
+        diplotype && !diplotype.includes("Unknown"),
+      phenotype_confident:
+        phenotype && phenotype !== "Unknown"
     }
   };
 }
