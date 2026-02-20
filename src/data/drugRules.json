@@ -58,5 +58,70 @@
         "recommendation": "Standard dosing."
       }
     }
+  },
+  "CLOPIDOGREL": {
+    "gene": "CYP2C19",
+    "rules": {
+      "PM": {
+        "risk": "Ineffective",
+        "severity": "high",
+        "recommendation": "Avoid clopidogrel. Consider alternative like prasugrel or ticagrelor."
+      },
+      "IM": {
+        "risk": "Adjust Dosage",
+        "severity": "moderate",
+        "recommendation": "Use alternative antiplatelet therapy."
+      },
+      "NM": {
+        "risk": "Safe",
+        "severity": "none",
+        "recommendation": "Standard dosing."
+      },
+      "UM": {
+        "risk": "Safe",
+        "severity": "none",
+        "recommendation": "Standard dosing."
+      }
+    }
+  },
+  "SIMVASTATIN": {
+    "gene": "SLCO1B1",
+    "rules": {
+      "PM": {
+        "risk": "Toxic",
+        "severity": "high",
+        "recommendation": "Avoid simvastatin. Consider alternative statin or lower dose."
+      },
+      "IM": {
+        "risk": "Adjust Dosage",
+        "severity": "moderate",
+        "recommendation": "Lower starting dose or consider alternative."
+      },
+      "NM": {
+        "risk": "Safe",
+        "severity": "none",
+        "recommendation": "Standard dosing."
+      }
+    }
+  },
+  "FLUOROURACIL": {
+    "gene": "DPYD",
+    "rules": {
+      "PM": {
+        "risk": "Toxic",
+        "severity": "critical",
+        "recommendation": "Avoid fluorouracil based therapy."
+      },
+      "IM": {
+        "risk": "Adjust Dosage",
+        "severity": "high",
+        "recommendation": "Reduce dose significantly."
+      },
+      "NM": {
+        "risk": "Safe",
+        "severity": "none",
+        "recommendation": "Standard dosing."
+      }
+    }
   }
 }

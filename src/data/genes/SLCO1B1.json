@@ -1,0 +1,22 @@
+{
+  "gene": "SLCO1B1",
+  "starAlleles": {
+    "*1": {
+      "function": "normal",
+      "variants": []
+    },
+    "*5": {
+      "function": "decreased",
+      "variants": ["rs4149056"]
+    }
+  },
+  "activityScore": {
+    "normal": 1.0,
+    "decreased": 0.5
+  },
+  "phenotypeRules": [
+    { "minScore": 0, "maxScore": 1, "phenotype": "PM" },
+    { "minScore": 1.5, "maxScore": 1.5, "phenotype": "IM" },
+    { "minScore": 2, "maxScore": 2, "phenotype": "NM" }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "gene": "TPMT",
+  "gene": "CYP2C19",
   "starAlleles": {
     "*1": {
       "function": "normal",
@@ -7,29 +7,26 @@
     },
     "*2": {
       "function": "no_function",
-      "variants": ["rs1800462"]
+      "variants": ["rs4244285"]
     },
-    "*3A": {
+    "*3": {
       "function": "no_function",
-      "variants": ["rs1800460", "rs1142345"]
+      "variants": ["rs4986893"]
     },
-    "*3C": {
-      "function": "no_function",
-      "variants": ["rs1142345"]
-    },
-    "*4": {
-      "function": "no_function",
-      "variants": ["rs1142345"]
+    "*17": {
+      "function": "increased",
+      "variants": ["rs12248560"]
     }
   },
   "activityScore": {
     "normal": 1.0,
-    "decreased": 0.5,
+    "increased": 1.0,
     "no_function": 0.0
   },
   "phenotypeRules": [
     { "minScore": 0, "maxScore": 0, "phenotype": "PM" },
     { "minScore": 0.5, "maxScore": 1, "phenotype": "IM" },
-    { "minScore": 1.5, "maxScore": 2, "phenotype": "NM" }
+    { "minScore": 1.5, "maxScore": 2, "phenotype": "NM" },
+    { "minScore": 2.5, "maxScore": 3, "phenotype": "UM" }
   ]
 }

@@ -1,0 +1,30 @@
+{
+  "gene": "DPYD",
+  "starAlleles": {
+    "*1": {
+      "function": "normal",
+      "variants": []
+    },
+    "*2A": {
+      "function": "no_function",
+      "variants": ["rs3918290"]
+    },
+    "*13": {
+      "function": "no_function",
+      "variants": ["rs55886062"]
+    },
+    "rs67376798": {
+      "function": "no_function",
+      "variants": ["rs67376798"]
+    }
+  },
+  "activityScore": {
+    "normal": 1.0,
+    "no_function": 0.0
+  },
+  "phenotypeRules": [
+    { "minScore": 0, "maxScore": 0.5, "phenotype": "PM" },
+    { "minScore": 1, "maxScore": 1.5, "phenotype": "IM" },
+    { "minScore": 2, "maxScore": 2, "phenotype": "NM" }
+  ]
+}
